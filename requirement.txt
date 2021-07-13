@@ -1,0 +1,6 @@
+torch==1.8.1
+numpy==1.20.2
+Pillow==8.2.0
+Shapely==1.7.1
+lanms==1.0.2
+opencv-python==4.5.2.54
