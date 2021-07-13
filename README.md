@@ -34,3 +34,11 @@ opencv-python==4.5.2.54
 `检测一张图像耗时为：0.4136s`
 ![](./res.bmp)
 由于训练次数以及参数设置的原因，可以发现，效果不是特别好。
+
+### 6. 使用方法
+1. 克隆这个仓库
+    - `git clone https://github.com/codecat0/EAST.git`
+2. 训练模型
+    - `python train.py`
+3. 模型预测
+    - `python detect.py`
