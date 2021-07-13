@@ -134,10 +134,10 @@ def plot_boxes(img, boxes):
 
 
 if __name__ == '__main__':
-    img_path = './ICDAR_2015/test_img/img_2.jpg'
+    img_path = './ICDAR_2015/test_img/img_91.jpg'
     model_path = './east_vgg16.pth'
-    res_img = './res.bmp'
-    res_box = './res.txt'
+    res_img = './detect_test/res.bmp'
+    res_box = './detect_test/res.txt'
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     model = EAST().to(device)
     model.load_state_dict(torch.load(model_path))
