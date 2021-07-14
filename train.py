@@ -72,8 +72,8 @@ if __name__ == '__main__':
     parser.add_argument('--pths_path', type=str, default='./weights')
     parser.add_argument('--batch_size', type=int, default=8)
     parser.add_argument('--lr', type=float, default=0.001)
-    parser.add_argument('--epochs', type=int, default=50)
-    parser.add_argument('--interval', type=int, default=10)
+    parser.add_argument('--epochs', type=int, default=600)
+    parser.add_argument('--interval', type=int, default=100)
     parser.add_argument('--weights', type=str, default='')
 
     opt = parser.parse_args()
