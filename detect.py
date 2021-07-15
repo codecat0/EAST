@@ -6,7 +6,7 @@
 import torch
 from torchvision import transforms
 from PIL import Image, ImageDraw
-from model.east_vgg16 import EAST
+from model.east_resnet50 import EAST
 import numpy as np
 import lanms
 import math
@@ -135,9 +135,9 @@ def plot_boxes(img, boxes):
 
 if __name__ == '__main__':
     img_path = './ICDAR_2015/test_img/img_91.jpg'
-    model_path = './east_vgg16.pth'
-    res_img = './detect_test/res.bmp'
-    res_box = './detect_test/res.txt'
+    model_path = './weights/model_epoch_200.pth'
+    res_img = './detect_test/res1.bmp'
+    res_box = './detect_test/res1.txt'
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     model = EAST().to(device)
     model.load_state_dict(torch.load(model_path))
