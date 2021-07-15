@@ -7,6 +7,7 @@
 
 import os
 import time
+import math
 import argparse
 
 import torch
@@ -32,7 +33,7 @@ def main(opt):
     start_epoch = 0
     criterion = Loss()
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
-    # device = torch.device('cpu')
+    print("==========Using {} {} device for training==========".format(device, torch.cuda.get_device_name(device)))
 
     # Load Model
     model = EAST()
@@ -57,7 +58,9 @@ def main(opt):
 
     # Optimizer
     optimizer = optim.Adam(model.parameters(), lr=opt.lr)
-    scheduler = lr_scheduler.MultiStepLR(optimizer, milestones=[opt.epochs//2], gamma=0.1)
+    # scheduler = lr_scheduler.MultiStepLR(optimizer, milestones=[opt.epochs//2], gamma=0.1)
+    lf = lambda x: ((1 + math.cos(x * math.pi / opt.epochs)) / 2) * (1 - opt.lrf) + opt.lrf
+    scheduler = lr_scheduler.LambdaLR(optimizer, lr_lambda=lf)
 
     for epoch in range(start_epoch, opt.epochs):
         model.train()
@@ -92,6 +95,7 @@ if __name__ == '__main__':
     parser.add_argument('--pths_path', type=str, default='./weights')
     parser.add_argument('--batch_size', type=int, default=8)
     parser.add_argument('--lr', type=float, default=0.001)
+    parser.add_argument('--lrf', type=float, default=0.01)
     parser.add_argument('--epochs', type=int, default=600)
     parser.add_argument('--interval', type=int, default=100)
     parser.add_argument('--weights', type=str, default='./weights/model_epoch_200.pth')
