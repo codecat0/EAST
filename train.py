@@ -20,6 +20,7 @@ from utils.loss import Loss
 
 
 def main(opt):
+    # Load DataSet
     file_num = len(os.listdir(opt.train_img_path))
     trainset = Custom_dataset(opt.train_img_path, opt.train_gt_path)
     train_loader = data.DataLoader(
@@ -28,18 +29,37 @@ def main(opt):
         shuffle=True,
         drop_last=True
     )
+    start_epoch = 0
     criterion = Loss()
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     # device = torch.device('cpu')
+
+    # Load Model
     model = EAST()
     model.to(device)
+
+    # PreTrained
     if opt.weights != '':
+        # 载入预训练模型参数
         weights_dict = torch.load(opt.weights, map_location=device)
         model.load_state_dict(weights_dict, strict=False)
+
+        # 获取当前迭代次数
+        # './weights/model_epoch_200.pth'
+        start_epoch = int(opt.weights.split('.')[-2].split('_')[-1])
+
+    # Freeze
+    if opt.freeze_layers:
+        for name, parameter in model.named_parameters():
+            # 冻结extractor层 和 merge层
+            if 'extractor' in name or 'merge' in name:
+                parameter.requires_grad_(False)
+
+    # Optimizer
     optimizer = optim.Adam(model.parameters(), lr=opt.lr)
     scheduler = lr_scheduler.MultiStepLR(optimizer, milestones=[opt.epochs//2], gamma=0.1)
 
-    for epoch in range(opt.epochs):
+    for epoch in range(start_epoch, opt.epochs):
         model.train()
         epoch_loss = 0
         epoch_time = time.time()
@@ -74,7 +94,8 @@ if __name__ == '__main__':
     parser.add_argument('--lr', type=float, default=0.001)
     parser.add_argument('--epochs', type=int, default=600)
     parser.add_argument('--interval', type=int, default=100)
-    parser.add_argument('--weights', type=str, default='')
+    parser.add_argument('--weights', type=str, default='./weights/model_epoch_200.pth')
+    parser.add_argument('--freeze_layers', type=bool, default=False)
 
     opt = parser.parse_args()
     print(opt)
